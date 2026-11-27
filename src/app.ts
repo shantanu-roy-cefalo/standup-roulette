@@ -30,6 +30,7 @@ export function render(root: HTMLElement, names: string[] = DEFAULT_NAMES): void
 
   const pointer = document.createElement('div');
   pointer.className = 'pointer';
+  pointer.setAttribute('aria-hidden', 'true');
   pointer.style.cssText =
     'position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;' +
     'border-left:14px solid transparent;border-right:14px solid transparent;' +

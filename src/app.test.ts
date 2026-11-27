@@ -8,7 +8,7 @@ describe('render', () => {
     expect(root.querySelector('h1')?.textContent).toBe('Standup Roulette');
   });
 
-  it('shows a canvas for the wheel with the six default names', () => {
+  it('shows six default names, a canvas wheel and a pointer', () => {
     const root = document.createElement('main');
     render(root);
     expect(DEFAULT_NAMES).toHaveLength(6);

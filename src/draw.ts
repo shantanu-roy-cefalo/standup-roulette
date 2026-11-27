@@ -1,9 +1,10 @@
-import { isUpsideDown, segmentAngles } from './wheel';
+import { colorIndex, fitName, fontSizeFor, segmentLayout } from './wheel';
 
 export const PALETTE = ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#2a9d8f'];
 
-/** Angle of the top of the wheel, where the pointer is. */
-const TOP = -Math.PI / 2;
+const RIM_GAP = 4;
+const LABEL_INSET = 14;
+const MAX_LABEL_CHARS = 14;
 
 export function drawWheel(
   ctx: CanvasRenderingContext2D,
@@ -13,35 +14,30 @@ export function drawWheel(
   const { width, height } = ctx.canvas;
   const cx = width / 2;
   const cy = height / 2;
-  const radius = Math.min(cx, cy) - 4;
+  const radius = Math.min(cx, cy) - RIM_GAP;
   ctx.clearRect(0, 0, width, height);
 
-  // At rotation 0 the pointer is on the middle of segment 0.
-  const offset = rotation + TOP - Math.PI / Math.max(names.length, 1);
-  segmentAngles(names.length).forEach((seg, i) => {
-    const start = seg.start + offset;
-    const end = seg.end + offset;
+  segmentLayout(names.length, rotation).forEach((seg, i) => {
     ctx.beginPath();
     ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, start, end);
+    ctx.arc(cx, cy, radius, seg.start, seg.end);
     ctx.closePath();
-    ctx.fillStyle = PALETTE[i % PALETTE.length];
+    ctx.fillStyle = PALETTE[colorIndex(i, names.length, PALETTE.length)];
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Name along the segment's middle radius, text reading outward.
+    // Label along the segment's middle, reading outward (turned round on the left half).
     ctx.save();
     ctx.translate(cx, cy);
-    const mid = (start + end) / 2;
-    const flip = isUpsideDown(mid);
-    ctx.rotate(flip ? mid + Math.PI : mid);
-    ctx.textAlign = flip ? 'left' : 'right';
+    ctx.rotate(seg.flip ? seg.mid + Math.PI : seg.mid);
+    ctx.textAlign = seg.flip ? 'left' : 'right';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText(names[i], flip ? -(radius - 14) : radius - 14, 0, radius * 0.7);
+    ctx.font = `bold ${fontSizeFor(names.length)}px sans-serif`;
+    const x = radius - LABEL_INSET;
+    ctx.fillText(fitName(names[i], MAX_LABEL_CHARS), seg.flip ? -x : x, 0);
     ctx.restore();
   });
 }
