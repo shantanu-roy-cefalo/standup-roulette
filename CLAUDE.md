@@ -35,7 +35,7 @@ A spinning wheel that picks who speaks first at standup.
 
 ## Pull requests
 
-- Branch: `claude/<jira-key>-<short-slug>`, for example `claude/KAN-12-footer-version`.
+- Branch: in a cloud session, the branch the session assigns (it starts with `claude/`). Otherwise `claude/<jira-key>-<short-slug>`, for example `claude/KAN-12-footer-version`. The Jira key in the PR title links the PR to the ticket, not the branch name.
 - Title: `<JIRA-KEY>: <summary>`, for example `KAN-12: Show the version in the footer`.
 - Body has exactly these three headings:
   - `## What changed`: the changes, as a short list.
